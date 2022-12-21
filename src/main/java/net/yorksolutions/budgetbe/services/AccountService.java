@@ -1,2 +1,5 @@
-package net.yorksolutions.budgetbe.services;public class AccountService {
+package net.yorksolutions.budgetbe.services;
+
+public class AccountService {
+
 }
