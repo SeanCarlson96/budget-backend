@@ -1,15 +1,13 @@
 package net.yorksolutions.budgetbe.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Budget {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     public Long id;
+    @Column(unique = true)
     public String name;
     public Long total;
     public Long balance;

@@ -1,45 +1,34 @@
 package net.yorksolutions.budgetbe.controllers;
 
-import net.yorksolutions.budgetbe.models.Budget;
 import net.yorksolutions.budgetbe.models.Party;
+import net.yorksolutions.budgetbe.services.PartyService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/parties")
 @CrossOrigin
 public class PartiesController {
-    private Long newPartyId = 0L;
-    private ArrayList<Party> parties = new ArrayList<>();
-
+    private final PartyService service;
+    public PartiesController(PartyService service) {
+        this.service = service;
+    }
     @GetMapping(params={"id"})
     public Party getParties(@RequestParam Long id){
-            for(Party party : parties){
-                if(id.equals(party.id)){
-                    return party;
-                }
-            }
-            return null;
+            return service.getPartyById(id);
     }
     @GetMapping
     public Iterable<Party> getParties(){
-            return parties;
+            return service.getAllParties();
     }
 
     @PostMapping
-    public ResponseEntity<Void> addParty(@RequestBody Party party){
-        //check if the party name already exists
-        for (Party existingParty : parties){
-            if(party.name.equals(existingParty.name)){
-                return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-            }
+    public void addParty(@RequestBody Party party) {
+        try {
+            service.addParty(party);
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED);
         }
-        party.id = newPartyId++;
-        parties.add(party);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

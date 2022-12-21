@@ -1,61 +1,43 @@
 package net.yorksolutions.budgetbe.controllers;
 
 import net.yorksolutions.budgetbe.models.Account;
-import net.yorksolutions.budgetbe.models.Party;
+import net.yorksolutions.budgetbe.services.AccountService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/accounts")
 @CrossOrigin
 public class AccountsController {
-    private Long newAccountId = 0L;
-    private ArrayList<Account> accounts = new ArrayList<>();
-
+    private final AccountService service;
+    public AccountsController(AccountService service) {
+        this.service = service;
+    }
     @GetMapping(params={"id"})
     public Account getAccountById(@RequestParam Long id){
-            for (Account account : accounts) {
-                if (account.id.equals(id)) {
-                    return account;
-                }
-            }
-            return null;
+        return service.getAccountById(id);
     }
     @GetMapping
     public Iterable<Account> getAccounts(){
-            return accounts;
+        return service.getAllAccounts();
     }
-
     @PostMapping
-    public ResponseEntity<Void> addAccount(@RequestBody Account account){
-        //check if the account name already exists
-        for (Account existingAccount : accounts){
-            if(account.name.equals(existingAccount.name)){
-                return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-            }
+    public void addAccount(@RequestBody Account account){
+        try {
+            service.addAccount(account);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED);
         }
-        account.id = newAccountId++;
-        accounts.add(account);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
-
     @PatchMapping//("/{id}")
-    public ResponseEntity<Void> updateAccountBalance(
+    public void updateAccountBalance(
             @RequestParam Long id,
-            @RequestBody Map balance){
-        for(Account existingAccount : accounts){
-            if(id.equals(existingAccount.id)){
-                int set = accounts.indexOf(existingAccount);
-                existingAccount.balance = (((Integer) balance.get("balance")).longValue());
-                accounts.set(set, existingAccount);
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
+            @RequestBody Long balance){
+        try {
+            service.updateAccountBalance(id, balance);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

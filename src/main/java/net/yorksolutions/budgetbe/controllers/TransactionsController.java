@@ -1,56 +1,45 @@
 package net.yorksolutions.budgetbe.controllers;
 
 import net.yorksolutions.budgetbe.models.Transaction;
+import net.yorksolutions.budgetbe.services.TransactionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/transactions")
 @CrossOrigin
 public class TransactionsController {
-    private Long newTransactionId = 0L;
-    private ArrayList<Transaction> transactions = new ArrayList<>();
-
+    private final TransactionService service;
+    public TransactionsController(TransactionService service) {
+        this.service = service;
+    }
     @GetMapping
-    public Iterable<Transaction> getTransactionById(
+    public Transaction getTransactionById(
             @RequestParam(required = false) Long id){
-        if(id == null)
-            return transactions;
-        else
-            for (Transaction transaction : transactions){
-                if(transaction.id.equals(id)){
-                    return List.of(new Transaction[]{transaction});
-                }
-            }
-        return List.of(new Transaction[]{});
+        return service.getTransactionById(id);
+    }
+    @GetMapping
+    public Iterable<Transaction> getAllTransactions(){
+        return service.getAllTransactions();
     }
 
     @PostMapping
-    public ResponseEntity<Void> addTransaction(@RequestBody Transaction transaction){
-        transaction.id = newTransactionId++;
-        transactions.add(transaction);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public void addTransaction(@RequestBody Transaction transaction){
+        service.addTransaction(transaction);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateTransactionBudgetId(
+    public void updateTransactionBudgetId(
             @PathVariable Long id,
             @RequestBody Long budgetId){
-
-        System.out.println("updating transaction");
-
-        for(Transaction existingTransaction : transactions){
-            if(id.equals(existingTransaction.id)){
-                int set = transactions.indexOf(existingTransaction);
-                existingTransaction.budgetId = budgetId;
-                transactions.set(set, existingTransaction);
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
+        try {
+            service.updateTransactionBudgetId(id, budgetId);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
