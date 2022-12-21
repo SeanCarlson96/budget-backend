@@ -12,6 +12,7 @@ public class Party {
     public String name;
     public Integer budgetId;
 
+
     public Party(Long id, String name, Integer budgetId) {
         this.id = id;
         this.name = name;
