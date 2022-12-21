@@ -17,9 +17,8 @@ public class TransactionsController {
     public TransactionsController(TransactionService service) {
         this.service = service;
     }
-    @GetMapping
-    public Transaction getTransactionById(
-            @RequestParam(required = false) Long id){
+    @GetMapping("/{id}")
+    public Transaction getTransactionById(@PathVariable Long id){
         return service.getTransactionById(id);
     }
     @GetMapping

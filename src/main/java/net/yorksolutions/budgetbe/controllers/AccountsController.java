@@ -14,8 +14,8 @@ public class AccountsController {
     public AccountsController(AccountService service) {
         this.service = service;
     }
-    @GetMapping(params={"id"})
-    public Account getAccountById(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public Account getAccountById(@PathVariable Long id){
         return service.getAccountById(id);
     }
     @GetMapping
@@ -30,9 +30,9 @@ public class AccountsController {
             throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED);
         }
     }
-    @PatchMapping//("/{id}")
+    @PatchMapping("/{id}")
     public void updateAccountBalance(
-            @RequestParam Long id,
+            @PathVariable Long id,
             @RequestBody Long balance){
         try {
             service.updateAccountBalance(id, balance);

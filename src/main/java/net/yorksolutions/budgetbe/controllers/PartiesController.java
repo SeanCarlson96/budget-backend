@@ -14,8 +14,8 @@ public class PartiesController {
     public PartiesController(PartyService service) {
         this.service = service;
     }
-    @GetMapping(params={"id"})
-    public Party getParties(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public Party getParties(@PathVariable Long id){
             return service.getPartyById(id);
     }
     @GetMapping

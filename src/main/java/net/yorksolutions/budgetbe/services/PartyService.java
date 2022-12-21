@@ -11,7 +11,7 @@ public class PartyService {
         this.partyRepo = partyRepo;
     }
     public Party getPartyById(Long id){
-        return partyRepo.findPartyById(id);
+        return partyRepo.findPartyById(id).orElse(null);
     }
 
     public Iterable<Party> getAllParties() {

@@ -17,8 +17,8 @@ public class BudgetsController {
     public BudgetsController(BudgetService service) {
         this.service = service;
     }
-    @GetMapping(params={"id"})
-    public Budget getBudgetById(@RequestParam Long id){
+    @GetMapping("/{id}")
+    public Budget getBudgetById(@PathVariable Long id){
         return service.getBudgetById(id);
     }
     @GetMapping
@@ -35,9 +35,9 @@ public class BudgetsController {
         }
     }
 
-    @PatchMapping//("/{id}")
+    @PatchMapping("/{id}")
     public void updateBudgetBalance(
-            @RequestParam Long id,
+            @PathVariable Long id,
             @RequestBody Long balance){
         try {
             service.updateBudgetBalance(id, balance);
