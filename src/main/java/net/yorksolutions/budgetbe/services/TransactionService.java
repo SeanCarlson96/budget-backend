@@ -29,4 +29,11 @@ public class TransactionService {
         transaction.budgetId = budgetId;
         transactionRepo.save(transaction);
     }
+
+    public void deleteTransactionById(Long id) throws Exception{
+        final var transaction = transactionRepo.findTransactionById(id).orElse(null);
+        if(transaction == null)
+            throw new Exception();
+        transactionRepo.deleteTransactionById(id);
+    }
 }

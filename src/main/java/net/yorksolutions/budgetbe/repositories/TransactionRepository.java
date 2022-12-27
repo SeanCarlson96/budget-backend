@@ -11,4 +11,5 @@ public interface TransactionRepository extends CrudRepository<Transaction, Long>
 
     public Optional<Transaction> findTransactionById(Long id);
     public Iterable<Transaction> findAll();
+    public void deleteTransactionById(Long id);
 }
