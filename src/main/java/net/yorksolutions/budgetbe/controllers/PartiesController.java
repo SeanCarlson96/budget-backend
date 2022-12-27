@@ -1,6 +1,7 @@
 package net.yorksolutions.budgetbe.controllers;
 
 import net.yorksolutions.budgetbe.models.Party;
+import net.yorksolutions.budgetbe.models.PartyRequestBody;
 import net.yorksolutions.budgetbe.services.PartyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -24,10 +25,11 @@ public class PartiesController {
     }
 
     @PostMapping
-    public void addParty(@RequestBody Party party) {
+    public void addParty(@RequestBody PartyRequestBody party) {
         try {
             service.addParty(party);
         } catch (Exception e){
+            System.out.println(e);
             throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED);
         }
     }
